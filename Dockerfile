@@ -1,6 +1,5 @@
 FROM maven:3.8.6-eclipse-temurin-17-alpine as builde
-RUN mvn dependency:go-offline
-RUN mvn package -DskipTests
+RUN mvn clean package -U -DskipTests
 
 FROM ibm-semeru-runtimes:open-17-jdk
 # 指定维护者的名字
