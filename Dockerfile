@@ -1,8 +1,5 @@
-FROM maven:3.8.6-eclipse-temurin-17-alpine as builder
-WORKDIR /app
-COPY pom.xml .
+FROM maven:3.8.6-eclipse-temurin-17-alpine as builde
 RUN mvn dependency:go-offline
-COPY src ./src
 RUN mvn package -DskipTests
 
 FROM ibm-semeru-runtimes:open-17-jdk
@@ -10,9 +7,10 @@ FROM ibm-semeru-runtimes:open-17-jdk
 MAINTAINER wayn111
 WORKDIR /root/workspace
 # 将当前目录下的jar包复制到docker容器的/目录下
-COPY --from=builder /app/target/*.jar /opt/crowd.jar
-
+COPY --from=builder /target/*.jar /opt/crowd.jar
+ADD ip2region.xdb /home/app/ip2region.xdb
 # 添加环境变量
+ENV IP_REGION_PATH=/home/app/ip2region.xdb
 ENV TZ="Asia/Shanghai"
 # 运行过程中创建一个mall-tiny-docker-file.jar文件
 RUN bash -c 'touch /opt/crowd.jar'
