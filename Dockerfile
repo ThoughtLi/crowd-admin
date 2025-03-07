@@ -1,5 +1,16 @@
 FROM maven:3.8.6-eclipse-temurin-17-alpine as builde
-RUN mvn clean package -U -DskipTests
+ENV PROJECT_NAME crowd-admin
+#定义工作目录
+ENV WORK_PATH /usr/src/$PROJECT_NAME
+####################定义环境变量 start####################
+#将源码复制到当前目录
+COPY ./crowd-* $WORK_PATH/
+COPY ./images $WORK_PATH/images
+COPY ./ip2region.xdb $WORK_PATH/ip2region.xdb
+COPY ./pom.xml $WORK_PATH/pom.xml
+#编译构建
+RUN cd $WORK_PATH && mvn clean package -U -DskipTests
+
 
 FROM ibm-semeru-runtimes:open-17-jdk
 # 指定维护者的名字
