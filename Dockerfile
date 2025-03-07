@@ -9,7 +9,7 @@ COPY ./images $WORK_PATH/images
 COPY ./ip2region.xdb $WORK_PATH/ip2region.xdb
 COPY ./pom.xml $WORK_PATH/pom.xml
 #编译构建
-RUN cd $WORK_PATH && mvn clean package -U -DskipTests
+RUN cd $WORK_PATH && mvn clean package -DskipTests -pl crowd-web -am
 
 
 FROM ibm-semeru-runtimes:open-17-jdk
@@ -17,7 +17,7 @@ FROM ibm-semeru-runtimes:open-17-jdk
 MAINTAINER wayn111
 WORKDIR /root/workspace
 # 将当前目录下的jar包复制到docker容器的/目录下
-COPY --from=builder /target/*.jar /opt/crowd.jar
+COPY --from=builder /usr/src/crowd-admin/crowd-web/target/*.jar /opt/crowd.jar
 ADD ip2region.xdb /home/app/ip2region.xdb
 # 添加环境变量
 ENV IP_REGION_PATH=/home/app/ip2region.xdb
